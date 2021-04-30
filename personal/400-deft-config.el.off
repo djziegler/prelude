@@ -1,0 +1,18 @@
+(prelude-require-packages '(deft))
+
+(require 'deft)
+(setq deft-default-extension "org")
+(setq deft-extensions '("org"))
+(setq deft-directory "~/org")
+(setq deft-recursive t)
+(setq deft-use-filename-as-title nil)
+(setq deft-use-filter-string-for-filename t)
+(setq deft-file-naming-rules '((noslash . "-")
+                               (nospace . "-")
+                               (case-fn . downcase)))
+(setq deft-text-mode 'org-mode)
+;;(global-set-key (kbd "C-M-S-s-d") 'deft)
+(global-set-key (kbd "C-x C-d") 'deft)
+(global-set-key (kbd "C-x C-g") 'deft-find-file)
+
+;;(key-chord-define-global "zd" 'deft)
