@@ -48,15 +48,17 @@
 (global-set-key "\C-z:" 'avy-goto-char)
 (global-set-key "\C-z\C-g" 'counsel-git-grep)
 (global-set-key "\C-z\C-c" 'comment-or-uncomment-region)
+(global-set-key "\C-z\C-z" 'suspend-frame)
 
 
 
 ;; AVY
 ;; Any lower-case letter or number.  Numbers are specified in the keyboard
 ;; number-row order, so that the candidate following '9' will be '0'.
-(setq avy-keys (nconc (number-sequence ?a ?z)
-                      (number-sequence ?1 ?9)
-                      '(?0)))
+;; (setq avy-keys (nconc (number-sequence ?a ?z)
+;;                       (number-sequence ?1 ?9)
+;;                       '(?0)))
+(setq avy-keys (nconc (number-sequence ?a ?z)))
 
 
 ;; If you would like to have the places that are closest to the point have shorter key sequences, you can customize it like this:
