@@ -31,7 +31,8 @@
 ;;(package-initialize)
 ;;(package-install 'use-package)
 
-(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1" nil t)
+;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1" nil t)
+(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-32-*-*-*-m-0-iso10646-1" nil t)
 
 (defun set-background-color-to-black ()
   (interactive)
@@ -49,6 +50,7 @@
 (global-set-key "\C-z\C-g" 'counsel-git-grep)
 (global-set-key "\C-z\C-c" 'comment-or-uncomment-region)
 (global-set-key "\C-z\C-z" 'suspend-frame)
+(global-set-key "\C-z\C-s" 'ace-swap-window)
 
 
 

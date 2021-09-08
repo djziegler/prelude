@@ -89,7 +89,7 @@
 ;; (require 'prelude-scala)
 ;; (require 'prelude-scheme)
 (require 'prelude-shell)
-;; (require 'prelude-scss)
+(require 'prelude-scss)
 (require 'prelude-ts)
 (require 'prelude-web) ;; Emacs mode for web templates
 (require 'prelude-xml)
