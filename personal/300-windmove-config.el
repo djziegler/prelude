@@ -1,6 +1,7 @@
-;;(require 'framemove)
+(require 'cl)
+(require 'framemove)
 (windmove-default-keybindings)
-;;(setq framemove-hook-into-windmove t)
+(setq framemove-hook-into-windmove t)
 
 ; for use on regular keyboard
 (global-set-key [M-left] 'windmove-left)          ; move to left windnow
