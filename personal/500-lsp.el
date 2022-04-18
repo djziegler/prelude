@@ -1,5 +1,6 @@
 ;;(setq lsp-completion-provider :none)
-(global-unset-key (kbd "C-p"))
-(setq lsp-keymap-prefix (kbd "C-p"))
+;;(global-unset-key (kbd "C-l"))
+
+;;(setq lsp-keymap-prefix (kbd "C-p"))
 
 

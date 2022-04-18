@@ -1,8 +1,54 @@
 (require 'prelude-packages "~/.emacs.d/core/prelude-packages.el" t)
 (prelude-require-packages '(zig-mode))
+(prelude-require-packages '(lsp-ivy))
+
+(prelude-require-packages '(use-package))
+
+(use-package all-the-icons
+  :if (display-graphic-p))
+
+(use-package doom-modeline
+             :ensure t
+             :init (doom-modeline-mode 1))
+
+;; Define your custom doom-modeline
+;;(doom-modeline-def-modeline 'my-simple-line
+;;                            '(bar matches buffer-info remote-host buffer-position parrot selection-info)
+;;                            '(misc-info minor-modes input-method buffer-encoding major-mode process vcs checker))
+
+;;(setq doom-modeline-height 250)
+;;(setq doom-modeline-hud 't)
+
+(doom-modeline-def-segment buffer-info-test
+  "Display only the current buffer's name, but with fontification."
+  (concat
+   (propertize (format " %s " "                                        ") 'face
+               (if (doom-modeline--active)
+                   'doom-modeline-buffer-major-mode
+                 'mode-line-inactive))))
+
+(doom-modeline-def-modeline 'my-simple-line
+                            '(buffer-info-test buffer-info-simple remote-host buffer-position)
+                            '())
+;;(doom-modeline-set-modeline 'my-simple-line 'default)
+
+;;(custom-set-faces '(fringe ((t (:background "blue")))))
+
+;; Add to `doom-modeline-mode-hook` or other hooks
+(defun setup-custom-doom-modeline ()
+  (doom-modeline-set-modeline 'my-simple-line 'default))
+
+(when (display-graphic-p)
+  (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline))
+
+;; Globally hide the mode line
+;;(setq-default mode-line-format nil)
 
 ;;(prelude-require-packages '(eev))
 
+;;window-divider-default-bottom-width and window-divider-default-right-width
+;;(setq window-divider-default-bottom-width 1
+      
 ;; Fancy query replace
 ;;(global-anzu-mode +1)
 (global-set-key [remap query-replace] 'anzu-query-replace)
@@ -32,7 +78,14 @@
 ;;(package-install 'use-package)
 
 ;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1" nil t)
-(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-32-*-*-*-m-0-iso10646-1" nil t)
+;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-32-*-*-*-m-0-iso10646-1" nil t)
+
+;;LG 65'
+(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" nil )
+;;(set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
+
+;;BenQ monitor
+;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-37-*-*-*-m-0-iso10646-1" nil t)
 
 (defun set-background-color-to-black ()
   (interactive)
@@ -43,7 +96,9 @@
 (set-background-color-to-black)
 
 
-(global-unset-key "\C-z")
+;;(global-unset-key "\C-z")
+
+(global-set-key "\C-o" 'avy-goto-char-timer)
 
 ;; We then remap c-: to C-z in kitty terminal emulator.
 (global-set-key "\C-z:" 'avy-goto-char)
@@ -51,6 +106,10 @@
 (global-set-key "\C-z\C-c" 'comment-or-uncomment-region)
 (global-set-key "\C-z\C-z" 'suspend-frame)
 (global-set-key "\C-z\C-s" 'ace-swap-window)
+(global-set-key "\C-z\C-r" 'recompile)
+
+(global-set-key "\C-zs" 'lsp-ivy-workspace-symbol)
+(global-set-key "\C-zS" 'lsp-ivy-global-workspace-symbol)
 
 
 
