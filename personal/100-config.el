@@ -74,6 +74,10 @@
 (setq prelude-whitespace nil)
 
 
+;; Don't put active region in X clipboard (slow with transient-mark-mode over
+;; remote X) - https://emacs.stackexchange.com/questions/57473/throttle-transient-mark-mode-highlighting
+(setq select-active-regions nil)
+
 ;;(package-initialize)
 ;;(package-install 'use-package)
 

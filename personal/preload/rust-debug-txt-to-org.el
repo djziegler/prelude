@@ -3,6 +3,11 @@
    (lambda (buf) (string= (with-current-buffer buf major-mode) "cargo-process-mode"))
    (buffer-list)))
 
+(defun kill-cargo-buffers ()
+  (interactive)
+  (dolist (buf (get-cargo-buffers))
+          (kill-buffer buf)))
+
 (defun get-active-cargo-buffer ()
   (let* ((cargo-buffers (get-cargo-buffers))
          (cargo-buffers-len (length cargo-buffers)))
