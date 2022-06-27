@@ -8,6 +8,7 @@
  '(auto-save-default t)
  '(auto-save-file-name-transforms '((".*" "~/.emacs-saves" t)))
  '(avy-timeout-seconds 0.5)
+ '(cargo-process--command-flags "-- --show-output")
  '(custom-enabled-themes '(oled-dark))
  '(custom-safe-themes
    '("395ad51224d80bb014db3c9f0d7ec872cc1620f7299f69b349c6c937c8542919" "570eeea1d7a691ffbfb8dafd2a31e6291d54f3743147290856b58c247095e076" "39a27aefcbe8e98896b238072f582b50349d52810eb936191ba543289c6665b7" "8b624f85e349d252904712df59c8c5cf392c129b0a1e81d3e1ca72291dd0c5e1" "db9a19afa4794ed518e213968b76354b8ba6942fe7a461b83943c0ae5e2f77b1" "65691fffa86cc30f7123e751c106682405885ef788c0d49194053e83a2967428" "29a9a486d9cf67333bc37b64578b4a1496a0d9e6597e485c0913b6a2b2b11fd4" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" default))

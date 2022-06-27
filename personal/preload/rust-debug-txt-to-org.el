@@ -43,8 +43,8 @@
       (insert-buffer-substring-no-properties cargo-buffer)
 
       (goto-char (point-min))
-      (while (re-search-forward "Some(\n[ ]+\\(.*\\)\n[ ]+),$" nil t)
-        (replace-match "Some(\\1)" nil nil))
+      (while (re-search-forward "Some(\n[ ]+\\(.*\\),\n[ ]+),$" nil t)
+        (replace-match "\\1" nil nil))
 
       (goto-char (point-min))
       (while (re-search-forward "[ ]?[{(]$" nil t)
@@ -61,6 +61,10 @@
       (goto-char (point-min))
       (while (re-search-forward "^[ ]*],?\n" nil t)
         (replace-match "" nil nil))
+
+      (goto-char (point-min))
+      (while (re-search-forward ",$" nil t)
+        (replace-match "" nil nil))
       
       (goto-char (point-min))  
       (while (re-search-forward "^" nil t)
@@ -72,9 +76,10 @@
 
       (goto-char (point-min))
 
-      (org-mode)
-      ))
-  )
+      (org-mode))
+
+    (select-window (get-buffer-window cargo-buffer))
+    (switch-to-buffer debug-buffer)))
 
 ;;(global-set-key "\C-zd" 'rust-debug-txt-to-org)
 (global-set-key "\C-zd" 'rust-debug-txt-to-org)
