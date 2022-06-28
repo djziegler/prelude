@@ -186,7 +186,7 @@ font:
   #builtin_box_drawing: true
 
 # If `true`, bold text is drawn using the bright color variants.
-#draw_bold_text_with_bright_colors: false
+#draw_bold_text_with_bright_colors: true
 
 # Colors (Tomorrow Night)
 colors:
@@ -194,8 +194,8 @@ colors:
   primary:
   #  background: '#1d1f21'
      background: '#000000'
-  #  foreground: '#c5c8c6'
-     foreground: '#0FF000'
+     #foreground: '#c5c8c6'
+     foreground: '#00FF00'
 
     # Bright and dim foreground colors
     #
@@ -203,8 +203,8 @@ colors:
     # present. If the bright foreground color is not set, or
     # `draw_bold_text_with_bright_colors` is `false`, the normal foreground
     # color will be used.
-    #dim_foreground: '#828482'
-    #bright_foreground: '#eaeaea'
+     #dim_foreground: '#828482'
+     #bright_foreground: '#eaeaea'
 
   # Cursor colors
   #
