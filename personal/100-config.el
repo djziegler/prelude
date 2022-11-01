@@ -85,8 +85,13 @@
 ;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-32-*-*-*-m-0-iso10646-1" nil t)
 
 ;;LG 65'
-(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" nil )
+;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" nil )
 ;;(set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
+
+;;NS 1080 
+(set-frame-font "-DAMA-Ubuntu Mono-bold-normal-normal-*-23-*-*-*-m-0-iso10646-1" nil t)
+;;(set-frame-font "-DAMA-Ubuntu Mono-bold-normal-normal-*-23-*-*-*-m-0-fontset-auto" nil t)
+;;menu-set-font ubuto mono 17 - gives the string above
 
 ;;BenQ monitor
 ;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-37-*-*-*-m-0-iso10646-1" nil t)
