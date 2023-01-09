@@ -85,13 +85,11 @@
 ;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-32-*-*-*-m-0-iso10646-1" nil t)
 
 ;;LG 65'
-;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" nil )
-;;(set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
+(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" nil )
+(set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
 
 ;;NS 1080 
-(set-frame-font "-DAMA-Ubuntu Mono-bold-normal-normal-*-23-*-*-*-m-0-iso10646-1" nil t)
-;;(set-frame-font "-DAMA-Ubuntu Mono-bold-normal-normal-*-23-*-*-*-m-0-fontset-auto" nil t)
-;;menu-set-font ubuto mono 17 - gives the string above
+;;(set-frame-font "-DAMA-Ubuntu Mono-bold-normal-normal-*-23-*-*-*-m-0-iso10646-1" nil t)
 
 ;;BenQ monitor
 ;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-37-*-*-*-m-0-iso10646-1" nil t)
@@ -113,14 +111,15 @@
 (global-set-key "\C-z:" 'avy-goto-char)
 (global-set-key "\C-z\C-g" 'counsel-git-grep)
 (global-set-key "\C-z\C-c" 'comment-or-uncomment-region)
+(global-set-key "\C-zc" 'comment-line)
 (global-set-key "\C-z\C-z" 'suspend-frame)
 (global-set-key "\C-z\C-s" 'ace-swap-window)
 (global-set-key "\C-z\C-r" 'recompile)
 
+(global-set-key "\C-zr" 'recentf-open)
+
 (global-set-key "\C-zs" 'lsp-ivy-workspace-symbol)
 (global-set-key "\C-zS" 'lsp-ivy-global-workspace-symbol)
-
-
 
 ;; AVY
 ;; Any lower-case letter or number.  Numbers are specified in the keyboard
