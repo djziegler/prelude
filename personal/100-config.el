@@ -109,6 +109,7 @@
 
 ;; We then remap c-: to C-z in kitty terminal emulator.
 (global-set-key "\C-z:" 'avy-goto-char)
+(global-set-key "\C-z'" 'avy-goto-char-2)
 (global-set-key "\C-z\C-g" 'counsel-git-grep)
 (global-set-key "\C-z\C-c" 'comment-or-uncomment-region)
 (global-set-key "\C-zc" 'comment-line)
