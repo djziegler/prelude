@@ -750,8 +750,11 @@ cursor:
 #
 # If the same trigger is assigned to multiple actions, all of them are executed
 # in the order they were defined in.
+
 key_bindings:
   - { key: F11,            action: ToggleFullscreen }
+  - { key: Colon, mods: Shift|Control, chars: "\x1a:" }
+  - { key: Apostrophe, mods: Control, chars: "\x1a'" }
 
   #- { key: Paste,                                       action: Paste          }
   #- { key: Copy,                                        action: Copy           }
