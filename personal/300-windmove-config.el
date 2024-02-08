@@ -1,5 +1,7 @@
 (require 'cl)
 (require 'framemove)
+;(require 'ansi-term)
+
 (windmove-default-keybindings)
 (setq framemove-hook-into-windmove t)
 
@@ -14,6 +16,23 @@
 (global-set-key "\M-\'" 'windmove-right)        ; move to right window
 (global-set-key "\M-u" 'windmove-up)              ; move to upper window
 (global-set-key "\M-m" 'windmove-down)          ; move to downer window
+
+(add-hook 'term-load-hook
+          (lambda ()
+             ; for use on regular keyboard to escape ansi-term
+             (define-key term-raw-map [M-left] 'windmove-left)          ; move to left windnow
+             (define-key term-raw-map [M-right] 'windmove-right)        ; move to right window
+             (define-key term-raw-map [M-up] 'windmove-up)              ; move to upper window
+             (define-key term-raw-map [M-down] 'windmove-down)          ; move to downer window
+
+             ; for use on datahand to escape ansi-term
+             (define-key term-raw-map "\M-h" 'windmove-left)          ; move to left windnow
+             (define-key term-raw-map "\M-\'" 'windmove-right)        ; move to right window
+             (define-key term-raw-map "\M-u" 'windmove-up)              ; move to upper window
+             (define-key term-raw-map "\M-m" 'windmove-down)          ; move to downer window
+             ))
+
+
 
 ;(global-set-key "\M-\"" 'windmove-left)          ; move to left windnow
 ;(global-set-key "\M-g" 'windmove-right)        ; move to right window

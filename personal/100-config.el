@@ -19,6 +19,7 @@
 ;;(setq doom-modeline-height 250)
 ;;(setq doom-modeline-hud 't)
 
+
 (doom-modeline-def-segment buffer-info-test
   "Display only the current buffer's name, but with fontification."
   (concat
@@ -94,6 +95,8 @@
 ;;BenQ monitor
 ;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-37-*-*-*-m-0-iso10646-1" nil t)
 
+(load-theme 'oled-dark t)
+
 (defun set-background-color-to-black ()
   (interactive)
   (set-background-color "black"))
@@ -107,7 +110,44 @@
 
 (global-set-key "\C-o" 'avy-goto-char-timer)
 
+;;(defun point-to-register-a ()
+;;  (interactive)
+;;  (point-to-register ?a))
+
+(defun point-to-register-a ()
+  (interactive)
+  (set-register ?a (point-marker)))
+
+(defun jump-to-register-a ()
+   (interactive)
+   (register-val-jump-to (get-register ?a) nil))
+
+(defun point-to-register-b ()
+  (interactive)
+  (set-register ?b (point-marker)))
+
+(defun jump-to-register-b ()
+   (interactive)
+   (register-val-jump-to (get-register ?b) nil))
+
+(defun point-to-register-c ()
+  (interactive)
+  (set-register ?c (point-marker)))
+
+(defun jump-to-register-c ()
+   (interactive)
+   (register-val-jump-to (get-register ?c) nil))
+
 ;; We then remap c-: to C-z in kitty terminal emulator.
+(global-set-key "\C-za" 'point-to-register-a)
+(global-set-key "\C-zb" 'point-to-register-b)
+(global-set-key "\C-zc" 'point-to-register-c)
+(global-set-key "\C-z\C-a" 'jump-to-register-a)
+(global-set-key "\C-z\C-b" 'jump-to-register-b)
+(global-set-key "\C-z\C-c" 'jump-to-register-c)
+
+;;(global-set-key "\C-zr" 'point-to-register)
+;;(global-set-key "\C-zj" 'jump-to-register)
 (global-set-key "\C-z:" 'avy-goto-char)
 (global-set-key "\C-z'" 'avy-goto-char-2)
 (global-set-key "\C-z\C-g" 'counsel-git-grep)
@@ -116,8 +156,9 @@
 (global-set-key "\C-z\C-z" 'suspend-frame)
 (global-set-key "\C-z\C-s" 'ace-swap-window)
 (global-set-key "\C-z\C-r" 'recompile)
+(global-set-key "\C-zm" 'magit-status)
 
-(global-set-key "\C-zr" 'recentf-open)
+(global-set-key "\C-zo" 'recentf-open)
 
 (global-set-key "\C-zs" 'lsp-ivy-workspace-symbol)
 (global-set-key "\C-zS" 'lsp-ivy-global-workspace-symbol)
@@ -244,3 +285,50 @@
 ;;               (setup-tide-mode))))
 
 (setq-default eshell-buffer-shorthand t)
+
+
+;; error: The module's source code could not be parsed: Expected '(', got 'async' at file:///home/dziegler/titan1c/experiments/http-server.ts:81:1
+(require 'compile)
+;;(add-hook 'typescript-mode-hook (lambda ()
+;;                           (add-to-list 'compilation-error-regexp-alist '("^error: .* at file://\\([^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))))
+
+;; error: TS2339 [ERROR]: Property 'entries' does not exist on type 'Promise<FormData>'.
+;;                data = Object.fromEntries(await (denoRequest.formData()).entries());
+;;                                                                         ~~~~~~~
+;;    at file:///home/dziegler/titan1c/experiments/http-server.ts:74:74
+;;
+;; TS2773 [ERROR]:     Did you forget to use 'await'?
+;;                    data = Object.fromEntries(await (denoRequest.formData()).entries());
+;;                                                                             ~~~~~~~
+;;        at file:///home/dziegler/titan1c/experiments/http-server.ts:74:74
+;;(add-hook 'typescript-mode-hook (lambda ()
+  ;;                                (add-to-list 'compilation-error-regexp-alist '("^\\(error: \\)?TS[0-9]+.*\\n.*\\n.*\\n[ ]+at file://\\([^:]+\\):\\([0-9]+\\):[0-9]+$" 3 4))))
+
+;;(add-hook 'typescript-mode-hook (lambda ()
+;;                                  (add-to-list 'compilation-error-regexp-alist '(".*\n.*\n[ ]+~*\n[ ]+at file://\\([^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))))
+
+;;(require 'compile)
+;;(add-to-list 'compilation-error-regexp-alist '("^\\(?:error: \\)?TS[0-9]+ .*\n.*\n[ ]+~*\n[ ]+at file://\\(/[^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))
+
+(require 'compile)
+;;(add-to-list 'compilation-error-regexp-alist '("^\\(?:error: \\)?TS[0-9]+ .*\n.*\n[ ]+~*\n[ ]+at file://\\(/[^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))
+
+
+(add-to-list 'compilation-error-regexp-alist '("^\\(?:error: \\)?TS[0-9]+ .*\n.*\n.*\n[ \t]+at file://\\(/[^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))
+(add-to-list 'compilation-error-regexp-alist '("^\\(?:error: \\)?TS[0-9]+ .*\n.*\n.*\n.*\n[ \t]+at file://\\(/[^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))
+(add-to-list 'compilation-error-regexp-alist '("^\\(?:error: \\)?TS[0-9]+ .*\n.*\n.*\n.*\n.*\n[ \t]+at file://\\(/[^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))
+(add-to-list 'compilation-error-regexp-alist '("^\\(?:error: \\)?TS[0-9]+ .*\n.*\n.*\n.*\n.*\n.*\n[ \t]+at file://\\(/[^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))
+(add-to-list 'compilation-error-regexp-alist '("^\\(?:error: \\)?TS[0-9]+ .*\n.*\n.*\n.*\n.*\n.*\n.*\n[ \t]+at file://\\(/[^:]+\\):\\([0-9]+\\):[0-9]+$" 1 2))
+
+(org-babel-do-load-languages 'org-babel-load-languages
+                             (append org-babel-load-languages
+                                     '((sqlite     . t))))
+
+
+
+
+
+
+
+
+

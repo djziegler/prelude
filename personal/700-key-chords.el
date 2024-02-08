@@ -7,3 +7,5 @@
 ;;(key-chord-define-global "z/" 'winner-redo)
 ;;(key-chord-define-global "zg" 'counsel-git-grep)
 ;;(key-chord-define-global "zg" 'counsel-git-grep)
+
+(key-chord-unset-global "uu")
