@@ -95,6 +95,13 @@
 ;;BenQ monitor
 ;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-37-*-*-*-m-0-iso10646-1" nil t)
 
+(defun set-benq-frame-font ()
+  (interactive)
+  (set-face-attribute 'default (selected-frame) :font "Ubuntu Mono" :height 420 :weight 'medium))
+
+;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-37-*-*-*-m-0-iso10646-1" nil t)
+
+
 (load-theme 'oled-dark t)
 
 (defun set-background-color-to-black ()
@@ -105,10 +112,11 @@
 
 (set-background-color-to-black)
 
+;;(global-unset-key "\C-ck")
+;;(global-set-key "\C-ck" 'kill-buffer))
 
 ;;(global-unset-key "\C-z")
 
-(global-set-key "\C-o" 'avy-goto-char-timer)
 
 ;;(defun point-to-register-a ()
 ;;  (interactive)
@@ -150,6 +158,7 @@
 ;;(global-set-key "\C-zj" 'jump-to-register)
 (global-set-key "\C-z:" 'avy-goto-char)
 (global-set-key "\C-z'" 'avy-goto-char-2)
+(global-set-key "\C-o" 'avy-goto-char-timer)
 (global-set-key "\C-z\C-g" 'counsel-git-grep)
 (global-set-key "\C-z\C-c" 'comment-or-uncomment-region)
 (global-set-key "\C-zc" 'comment-line)
