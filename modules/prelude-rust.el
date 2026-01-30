@@ -61,7 +61,7 @@
 
   (defun prelude-rust-mode-defaults ()
     ;; format on save
-    (setq rust-format-on-save t)
+    (setq rust-format-on-save nil)
 
     ;; lsp settings
     (setq

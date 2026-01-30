@@ -4,12 +4,71 @@
 
 (prelude-require-packages '(use-package))
 
+
+;;(add-hook 'zig-mode (lambda () (kill-local-variable 'compile-command)))
+;;(add-hook 'zig-mode (lambda () (setq-local compile-command "BAng")))
+
 (use-package all-the-icons
   :if (display-graphic-p))
+
+;; sudo apt install libtool libtool-bin
+(use-package vterm :ensure t)
+;;  "M-h" "M-'" "M-m" "M-u"
 
 (use-package doom-modeline
              :ensure t
              :init (doom-modeline-mode 1))
+
+(use-package chatgpt-shell)
+
+;;(setq chatgpt-shell-openai-key (getenv "OPENAI_API_KEY"))
+
+;; (defun chatgpt-shell-openai-models ()
+;;   "Build a list of all OpenAI LLM models available."
+;;   ;; Context windows have been verified as of 11/26/2024.
+;;   (list (chatgpt-shell-openai-make-model
+;;          :version "deepseek-chat"
+;;          :token-width 3
+;;          ;; https://platform.openai.com/docs/models/gpt-4o
+;;          :context-window 128000)
+;;         (chatgpt-shell-openai-make-model
+;;          :version "deepseek-reasoner"
+;;          :token-width 3
+;;          ;; https://platform.openai.com/docs/models/gpt-01
+;;          :context-window 128000
+;;          :validate-command #'chatgpt-shell-validate-no-system-prompt)))
+
+
+;; Straight package manager
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+
+
+(use-package aidermacs
+  :straight (:host github :repo "MatthewZMD/aidermacs" :files ("*.el"))
+  :config
+  (setq aidermacs-default-model "sonnet")
+  (global-set-key (kbd "C-c a") 'aidermacs-transient-menu)
+                                        ; Ensure emacs can access *_API_KEY through .bashrc or setenv
+  ;;(setenv "ANTHROPIC_API_KEY" anthropic-api-key)
+                                        ; See the Configuration section below
+  (setq aidermacs-auto-commits t)
+  (setq aidermacs-use-architect-mode t))
+
 
 ;; Define your custom doom-modeline
 ;;(doom-modeline-def-modeline 'my-simple-line
@@ -57,7 +116,7 @@
 
 ;; Prelude includes super-save-mode which saves buffers whenever they lose focus -
 ;; disable it.  May need to turn on regular auto-save mode after doing this.
-(super-save-mode -1)
+;;(super-save-mode -1)
 
 ;; Don't reformat source code on save (only affects typescript at the moment)
 (setq prelude-format-on-save nil)
@@ -86,7 +145,10 @@
 ;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-32-*-*-*-m-0-iso10646-1" nil t)
 
 ;;LG 65'
-(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" nil )
+;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" nil )
+;; -26- was 84 chars wide on LG 65' with 3x split
+;; trying -25- now.
+(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-25-*-*-*-m-0-iso10646-1" nil )
 (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
 
 ;;NS 1080 
@@ -111,6 +173,9 @@
 (global-set-key "\C-c\C-b" 'set-background-color-to-black)
 
 (set-background-color-to-black)
+
+;; undef M-c (previously captialize word) so we can use it as a new prefix char
+(global-unset-key "\M-c")
 
 ;;(global-unset-key "\C-ck")
 ;;(global-set-key "\C-ck" 'kill-buffer))
@@ -146,6 +211,10 @@
    (interactive)
    (register-val-jump-to (get-register ?c) nil))
 
+
+
+(global-set-key "\C-za" 'aider-transient-menu)
+
 ;; We then remap c-: to C-z in kitty terminal emulator.
 (global-set-key "\C-za" 'point-to-register-a)
 (global-set-key "\C-zb" 'point-to-register-b)
@@ -158,7 +227,8 @@
 ;;(global-set-key "\C-zj" 'jump-to-register)
 (global-set-key "\C-z:" 'avy-goto-char)
 (global-set-key "\C-z'" 'avy-goto-char-2)
-(global-set-key "\C-o" 'avy-goto-char-timer)
+(global-set-key "\C-zt" 'avy-goto-char-timer)
+(global-set-key "\C-o" 'avy-goto-char-2)
 (global-set-key "\C-z\C-g" 'counsel-git-grep)
 (global-set-key "\C-z\C-c" 'comment-or-uncomment-region)
 (global-set-key "\C-zc" 'comment-line)
@@ -166,6 +236,12 @@
 (global-set-key "\C-z\C-s" 'ace-swap-window)
 (global-set-key "\C-z\C-r" 'recompile)
 (global-set-key "\C-zm" 'magit-status)
+
+(global-set-key "\C-zis" 'chatgpt-shell)
+(global-set-key "\C-zic" 'chatgpt-shell-prompt-compose)
+(global-set-key "\C-zif" 'chatgpt-shell-quick-insert)
+
+;;(global-set-key "\C-zig" 'gptel-add)
 
 (global-set-key "\C-zo" 'recentf-open)
 
@@ -249,18 +325,41 @@
 
 (global-set-key "\C-cc" 'save-and-recompile)
 
+(defun restore-pre-compile-window-configuration ()
+  (interactive)
+  (set-window-configuration pre-compile-window-configuration)
+  )
+
+(global-set-key "\M-cc" 'restore-pre-compile-window-configuration)
+
 (setq recentf-max-saved-items 1000)
 (setq recentf-max-menu-items 100)
 
 (set-variable `c-basic-offset 2)
 (c-set-offset 'innamespace 0)
+(setq-default c-offsets-alist
+              '((innamespace . 0)))
+(add-hook 'c++-mode-hook
+          (lambda ()
+            (c-set-offset 'innamespace 0)))
+(setq treesit-c++-indent-namespace-contents nil)
+
+
+
+;;(defconst my-cc-style
+;;  '("cc-mode"
+;;    (inlambda . 0) ; no extra indent for lambda
+;;    (c-offsets-alist . ((innamespace . [0])))))
 
 (defconst my-cc-style
   '("cc-mode"
-    (inlambda . 0) ; no extra indent for lambda
     (c-offsets-alist . ((innamespace . [0])))))
 
-(global-set-key "\C-co" 'other-frame)
+(c-add-style "my-cc-mode" my-cc-style)
+
+
+
+;;(global-set-key "\C-co" 'other-frame)
 ;(global-set-key "\C-cr" 'restart-compile)
 (global-set-key "\C-cg" 'goto-line)
 
@@ -335,9 +434,26 @@
 
 
 
+;;(defvar my-cpp-other-file-alist
+;;  '(("\\.cpp\\'" (".hpp"))
+;;    ("\\.hpp\\'" (".cpp"))))
+
+;;(setq-default ff-other-file-alist 'my-cpp-other-file-alist) 
+
+
+(add-hook 'c-mode-common-hook
+          (lambda() 
+            (local-set-key  (kbd "C-z h") 'cff-find-other-file)))
 
 
 
 
+(define-key vterm-mode-map (kbd "C-c C-t") 'vterm-copy-mode)
 
+(advice-add 'set-window-vscroll :after
+            (defun me/vterm-toggle-scroll (&rest _)
+              (when (eq major-mode 'vterm-mode)
+                (if (> (window-end) (buffer-size))
+                    (when vterm-copy-mode (vterm-copy-mode-done nil))
+                  (vterm-copy-mode 1)))))
 

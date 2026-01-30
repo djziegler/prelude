@@ -8,3 +8,9 @@
 (add-hook 'c++-mode-hook 'lsp)
 
 
+
+;;(setq tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
+
+
+
+
