@@ -13,6 +13,20 @@
 
 ;; sudo apt install libtool libtool-bin
 (use-package vterm :ensure t)
+
+(defun my/vterm-mode-setup ()
+  "Setup vterm keybindings.
+These explicit bindings fix keys in terminal frames and are harmless in GUI."
+  (local-set-key (kbd "C-c C-t") 'vterm-copy-mode)
+  (local-set-key (kbd "RET") #'vterm-send-return)
+  (local-set-key (kbd "DEL") #'vterm-send-backspace)
+  (local-set-key [up] #'vterm-send-up)
+  (local-set-key [down] #'vterm-send-down)
+  (local-set-key [left] #'vterm-send-left)
+  (local-set-key [right] #'vterm-send-right)
+  (local-set-key [tab] (lambda () (interactive) (vterm-send-key "<tab>"))))
+
+(add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
 ;;  "M-h" "M-'" "M-m" "M-u"
 
 (use-package doom-modeline
@@ -87,8 +101,16 @@
                    'doom-modeline-buffer-major-mode
                  'mode-line-inactive))))
 
+(doom-modeline-def-segment server-name-segment
+  "Display the Emacs server name, only if EMACS_SERVER_NAME was set."
+  (when (getenv "EMACS_SERVER_NAME")
+    (propertize (format "[%s] " server-name) 'face
+                (if (doom-modeline--active)
+                    'doom-modeline-buffer-major-mode
+                  'mode-line-inactive))))
+
 (doom-modeline-def-modeline 'my-simple-line
-                            '(buffer-info-test buffer-info-simple remote-host buffer-position)
+                            '(server-name-segment buffer-info-simple remote-host buffer-position)
                             '())
 ;;(doom-modeline-set-modeline 'my-simple-line 'default)
 
@@ -99,7 +121,7 @@
   (doom-modeline-set-modeline 'my-simple-line 'default))
 
 (when (display-graphic-p)
-  (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline))
+  (setup-custom-doom-modeline))
 
 ;; Globally hide the mode line
 ;;(setq-default mode-line-format nil)
@@ -369,6 +391,10 @@
 
 (setenv "PAGER" "/bin/cat")
 (setenv "EDITOR" "/usr/bin/emacsclient") ; `which emacsclient`
+;; to use: EMACS_SERVER_NAME=work emacs
+;; emacsclient -nw -s work
+(when (getenv "EMACS_SERVER_NAME")
+  (setq server-name (getenv "EMACS_SERVER_NAME")))
 (server-start)
 
 (defun revert-all-buffers ()
@@ -383,7 +409,11 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 
-(setq-default frame-title-format '("%f [%m]"))
+(setq-default frame-title-format
+              '(:eval (concat
+                       (when (getenv "EMACS_SERVER_NAME")
+                         (format "[%s] " server-name))
+                       "%f [%m]")))
 
 (add-to-list 'auto-mode-alist '("\\.tsx$" . typescript-mode))
 ;; (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
@@ -448,7 +478,6 @@
 
 
 
-(define-key vterm-mode-map (kbd "C-c C-t") 'vterm-copy-mode)
 
 (advice-add 'set-window-vscroll :after
             (defun me/vterm-toggle-scroll (&rest _)
