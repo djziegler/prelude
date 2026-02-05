@@ -24,7 +24,10 @@ These explicit bindings fix keys in terminal frames and are harmless in GUI."
   (local-set-key [down] #'vterm-send-down)
   (local-set-key [left] #'vterm-send-left)
   (local-set-key [right] #'vterm-send-right)
-  (local-set-key [tab] (lambda () (interactive) (vterm-send-key "<tab>"))))
+  (local-set-key [tab] (lambda () (interactive) (vterm-send-key "<tab>")))
+  (local-set-key (kbd "TAB") (lambda () (interactive) (vterm-send-key "<tab>")))
+  (local-set-key (kbd "C-q") #'vterm-send-next-key)
+  (local-set-key (kbd "C-e") (lambda () (interactive) (vterm-send-key "<escape>"))))
 
 (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
 ;;  "M-h" "M-'" "M-m" "M-u"
