@@ -199,6 +199,10 @@ These explicit bindings fix keys in terminal frames and are harmless in GUI."
 
 (set-background-color-to-black)
 
+;; In terminal mode, let the terminal's own background show through
+(unless (display-graphic-p)
+  (set-face-background 'default "unspecified-bg"))
+
 ;; undef M-c (previously captialize word) so we can use it as a new prefix char
 (global-unset-key "\M-c")
 
