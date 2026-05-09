@@ -124,16 +124,24 @@ These explicit bindings fix keys in terminal frames and are harmless in GUI."
                     'doom-modeline-buffer-major-mode
                   'mode-line-inactive))))
 
-;; pj-modeline: colored chip per pj checkout. Loading the file registers
-;; the `pj-checkout' doom segment (via with-eval-after-load
-;; 'doom-modeline inside the file), which the modeline def below refers
-;; to. Canonical projects render uncolored; --instance variants get a
-;; stable hashed color.
-(load (expand-file-name "~/projects/pj/contrib/pj-modeline.el") nil 'nomessage)
-(pj-modeline-mode 1)
+;; pj-modeline: optional integration with the pj container tool.
+;; Loads from ~/projects/pj/contrib/ if present; gracefully no-ops on
+;; machines without pj installed. The segment list below conditionally
+;; includes `pj-checkout' so doom-modeline doesn't try to render an
+;; unregistered segment when pj isn't available.
+(defvar my/pj-modeline-available
+  (load (expand-file-name "~/projects/pj/contrib/pj-modeline.el")
+        'noerror 'nomessage)
+  "Whether ~/projects/pj/contrib/pj-modeline.el was loadable.
+Non-nil only if pj is installed at the expected path.")
+
+(when my/pj-modeline-available
+  (pj-modeline-mode 1))
 
 (doom-modeline-def-modeline 'my-simple-line
-                            '(server-name-segment buffer-info-simple pj-checkout remote-host buffer-position)
+                            (if my/pj-modeline-available
+                                '(server-name-segment buffer-info-simple pj-checkout remote-host buffer-position)
+                              '(server-name-segment buffer-info-simple remote-host buffer-position))
                             '())
 ;;(doom-modeline-set-modeline 'my-simple-line 'default)
 
