@@ -7,7 +7,8 @@
 
 (require 'prelude-packages "~/.emacs.d/core/prelude-packages.el" t)
 (prelude-require-packages '(zig-mode))
-(prelude-require-packages '(lsp-ivy))
+(when (eq prelude-lsp-client 'lsp-mode)
+  (prelude-require-packages '(lsp-ivy)))
 
 (prelude-require-packages '(use-package))
 

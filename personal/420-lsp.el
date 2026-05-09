@@ -1,22 +1,29 @@
-;;; 420-lsp.el --- lsp-mode preferences + lsp-ivy bindings
+;;; 420-lsp.el --- LSP client preferences (eglot or lsp-mode)
 ;;
-;; Was personal/500-lsp.el. Hides the breadcrumb, autostart for C/C++
-;; buffers, and binds lsp-ivy workspace-symbol search on C-z s / C-z S.
+;; The active client is controlled by `prelude-lsp-client'
+;; (see core/prelude-custom.el; default in Prelude 2.1 is 'eglot).
+;; Each block below applies only when the corresponding client is
+;; selected, so toggling the variable cleanly swaps configurations.
 
-;;(setq lsp-completion-provider :none)
-;;(global-unset-key (kbd "C-l"))
+;; ---------------------------------------------------------------------------
+;; lsp-mode
+;; ---------------------------------------------------------------------------
+(when (eq prelude-lsp-client 'lsp-mode)
+  (with-eval-after-load 'lsp-mode
+    (setq lsp-headerline-breadcrumb-enable nil))
 
-;;(setq lsp-keymap-prefix (kbd "C-p"))
-(setq lsp-headerline-breadcrumb-enable nil)
+  ;; lsp-ivy workspace symbol search
+  (with-eval-after-load 'lsp-ivy
+    (global-set-key (kbd "C-z s") #'lsp-ivy-workspace-symbol)
+    (global-set-key (kbd "C-z S") #'lsp-ivy-global-workspace-symbol)))
 
-(add-hook 'c-mode-hook 'lsp)
-(add-hook 'c++-mode-hook 'lsp)
-
-
-;;(setq tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
-
-
-(global-set-key "\C-zs" 'lsp-ivy-workspace-symbol)
-(global-set-key "\C-zS" 'lsp-ivy-global-workspace-symbol)
+;; ---------------------------------------------------------------------------
+;; eglot
+;; ---------------------------------------------------------------------------
+(when (eq prelude-lsp-client 'eglot)
+  ;; (Add eglot customizations here as you migrate.)
+  ;; Useful starting points:
+  ;;   (add-to-list 'eglot-stay-out-of 'flymake)  ;; if you prefer flycheck
+  )
 
 ;;; 420-lsp.el ends here
