@@ -28,9 +28,10 @@
   ;; minimal.)
   (require 'eglot)
 
-  ;; (Add eglot customizations here as you migrate.)
-  ;; Useful starting points:
-  ;;   (add-to-list 'eglot-stay-out-of 'flymake)  ;; if you prefer flycheck
-  )
+  ;; Bind eglot's lesser-used navigation commands (prelude only binds
+  ;; rename, code-actions, format, and organize-imports).
+  (define-key eglot-mode-map (kbd "C-c C-l i") #'eglot-find-implementation)
+  (define-key eglot-mode-map (kbd "C-c C-l t") #'eglot-find-typeDefinition)
+  (define-key eglot-mode-map (kbd "C-c C-l d") #'eglot-find-declaration))
 
 ;;; 420-lsp.el ends here
