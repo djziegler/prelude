@@ -79,6 +79,7 @@
 ;; (require 'prelude-latex)
 (require 'prelude-lisp) ;; Common setup for Lisp-like languages
 (require 'prelude-lsp-mode) ;; Base setup for the Language Server Protocol
+(require 'prelude-eglot-booster) ;; Speeds up Eglot via emacs-lsp-booster (host-side JSON parser)
 ;; (require 'prelude-lua)
 ;; (require 'prelude-ocaml)
 (require 'prelude-perl)
