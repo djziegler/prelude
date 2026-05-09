@@ -35,6 +35,11 @@
  '(prelude-theme 'oled-dark)
  '(rust-format-on-save nil t)
  '(rust-format-show-buffer nil)
+ '(safe-local-variable-values
+   '((eval setq-local projectile-project-root
+           (locate-dominating-file
+            (or (buffer-file-name) default-directory)
+            "entropy-project-root.marker"))))
  '(scroll-bar-mode nil)
  '(tide-server-max-response-length 1024000)
  '(vterm-keymap-exceptions
