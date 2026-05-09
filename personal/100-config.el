@@ -4,6 +4,11 @@
 
 (prelude-require-packages '(use-package))
 
+(use-package claude-code-ide
+  :vc (:url "https://github.com/manzaltu/claude-code-ide.el" :rev :newest)
+  :bind ("C-c C-'" . claude-code-ide-menu) ; Set your favorite keybinding
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 
 ;;(add-hook 'zig-mode (lambda () (kill-local-variable 'compile-command)))
 ;;(add-hook 'zig-mode (lambda () (setq-local compile-command "BAng")))
@@ -31,6 +36,13 @@ These explicit bindings fix keys in terminal frames and are harmless in GUI."
 
 (add-hook 'vterm-mode-hook #'my/vterm-mode-setup)
 ;;  "M-h" "M-'" "M-m" "M-u"
+
+ 
+(add-hook 'vterm-mode-hook
+          (lambda ()
+            (define-key vterm-mode-map (kbd "C-c C-c") #'vterm-send-C-c)))
+
+
 
 (use-package doom-modeline
              :ensure t
@@ -112,8 +124,16 @@ These explicit bindings fix keys in terminal frames and are harmless in GUI."
                     'doom-modeline-buffer-major-mode
                   'mode-line-inactive))))
 
+;; pj-modeline: colored chip per pj checkout. Loading the file registers
+;; the `pj-checkout' doom segment (via with-eval-after-load
+;; 'doom-modeline inside the file), which the modeline def below refers
+;; to. Canonical projects render uncolored; --instance variants get a
+;; stable hashed color.
+(load (expand-file-name "~/projects/pj/contrib/pj-modeline.el") nil 'nomessage)
+(pj-modeline-mode 1)
+
 (doom-modeline-def-modeline 'my-simple-line
-                            '(server-name-segment buffer-info-simple remote-host buffer-position)
+                            '(server-name-segment buffer-info-simple pj-checkout remote-host buffer-position)
                             '())
 ;;(doom-modeline-set-modeline 'my-simple-line 'default)
 
@@ -194,6 +214,7 @@ These explicit bindings fix keys in terminal frames and are harmless in GUI."
 (defun set-background-color-to-black ()
   (interactive)
   (set-background-color "black"))
+;;(set-face-background 'default "unspecified-bg"))
 
 (global-set-key "\C-c\C-b" 'set-background-color-to-black)
 
@@ -202,6 +223,8 @@ These explicit bindings fix keys in terminal frames and are harmless in GUI."
 ;; In terminal mode, let the terminal's own background show through
 (unless (display-graphic-p)
   (set-face-background 'default "unspecified-bg"))
+
+;;(set-face-background 'default "unspecified-bg"))
 
 ;; undef M-c (previously captialize word) so we can use it as a new prefix char
 (global-unset-key "\M-c")
@@ -492,4 +515,10 @@ These explicit bindings fix keys in terminal frames and are harmless in GUI."
                 (if (> (window-end) (buffer-size))
                     (when vterm-copy-mode (vterm-copy-mode-done nil))
                   (vterm-copy-mode 1)))))
+
+
+(defun nushell ()
+  (interactive)
+  (let ((explicit-shell-file-name "nu"))
+    (shell "*nushell*")))
 
