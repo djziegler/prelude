@@ -1,10 +1,10 @@
 ;; Don't want the menu or line #'s
 (setq prelude-minimalistic-ui 't)
 
-;; Prelude 2.1 defaults `prelude-lsp-client' to 'eglot. Pin to lsp-mode
-;; for now to preserve existing behavior; flip to 'eglot when ready and
-;; the eglot block in personal/420-lsp.el will take over.
-(setq prelude-lsp-client 'lsp-mode)
+;; Prelude 2.1 defaults `prelude-lsp-client' to 'eglot. The eglot block
+;; in personal/420-lsp.el and the eglot path in pj-lsp.el take over when
+;; this is set to 'eglot; flip back to 'lsp-mode to switch clients.
+(setq prelude-lsp-client 'eglot)
 
 ;; scss-mode (MELPA 20180123, unmaintained) pushes onto two legacy-flymake
 ;; variables removed from modern Emacs, erroring at load time. Stub them so

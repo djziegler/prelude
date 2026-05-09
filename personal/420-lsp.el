@@ -21,6 +21,13 @@
 ;; eglot
 ;; ---------------------------------------------------------------------------
 (when (eq prelude-lsp-client 'eglot)
+  ;; Force eager load so `with-eval-after-load 'eglot' callbacks fire
+  ;; during startup. pj-lsp relies on this — its per-mode hooks must be
+  ;; attached before the first code buffer's mode-hook calls
+  ;; `eglot-ensure'. (Eglot is built into Emacs 29+, so the cost is
+  ;; minimal.)
+  (require 'eglot)
+
   ;; (Add eglot customizations here as you migrate.)
   ;; Useful starting points:
   ;;   (add-to-list 'eglot-stay-out-of 'flymake)  ;; if you prefer flycheck
