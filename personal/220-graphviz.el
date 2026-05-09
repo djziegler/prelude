@@ -1,3 +1,9 @@
+;;; 220-graphviz.el --- Render dot/graphviz blocks from buffers
+;;
+;; Was personal/graphviz-invoke.el. Provides commands to render the
+;; current `digraph G { ... }' block (or the latest one in a
+;; *compilation* buffer) via `dot' to SVG/PNG/PDF and view it.
+
 (global-set-key (kbd "C-x c") 'graphviz-calcite-error)
 
 (defun graphviz-calcite-error ()
@@ -32,13 +38,13 @@
 
 (defun graphviz-region (&optional b e)
   (interactive "r")
-  ;(message "RG %d - %d" b e)
+                                        ;(message "RG %d - %d" b e)
   (let ((fname (make-temp-file "calcitegraph" nil ".svg")))
     (let ((cmd (format "dot -Tsvg -o %s" fname)))
       (message "CMD %s" cmd)
       (call-shell-region b e cmd)
       (start-process "graphviz" "*graphviz*" "google-chrome" fname))))
-  ;;(find-file fname))))
+;;(find-file fname))))
 
 (defun graphviz-region0 (&optional b e)
   (interactive "r")
@@ -48,7 +54,7 @@
       (message "CMD %s" cmd)
       (call-shell-region b e cmd)
       (start-process "graphviz" "*graphviz*" "evince" "-f" fname))))
-  ;;(find-file fname))))
+;;(find-file fname))))
 
 (defun graphviz-region1 (&optional b e)
   (interactive "r")
@@ -66,3 +72,5 @@
     (let ((cmd (format "dot -Tpng -o %s && (eog %s &)" fname fname)))
       (message "CMD %s" cmd)
       (call-shell-region b e cmd))))
+
+;;; 220-graphviz.el ends here
