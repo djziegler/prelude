@@ -1,6 +1,6 @@
 ;;; prelude-vertico.el --- Vertico setup
 ;;
-;; Copyright © 2011-2025 Bozhidar Batsov
+;; Copyright © 2011-2026 Bozhidar Batsov
 ;;
 ;; Author: Bozhidar Batsov <bozhidar@batsov.com>
 ;; URL: https://github.com/bbatsov/prelude
@@ -30,7 +30,6 @@
 ;; Boston, MA 02110-1301, USA.
 
 ;;; Code:
-(require 'use-package)
 
 ;; Enable vertico
 (use-package vertico
@@ -89,6 +88,12 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
 
+;; Rich annotations in the minibuffer (docstrings, file sizes, etc.)
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode))
+
 (use-package consult
   :ensure t
   :bind (
@@ -104,8 +109,11 @@
          ;; Other custom bindings
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings (goto-map)
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flycheck)
+         ;; Note: M-g e and M-g f are intentionally omitted from consult's
+         ;; recommended bindings to avoid clobbering Prelude's long-standing
+         ;; avy bindings (avy-goto-word-0 and avy-goto-line).  Bind
+         ;; consult-compile-error / consult-flymake in your personal config
+         ;; if you'd rather have them.
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
          ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
@@ -121,7 +129,7 @@
          ("M-s r" . consult-ripgrep)
          ("M-s l" . consult-line)
          ("M-s L" . consult-line-multi)
-         ("M-s m" . consult-multi-occur)
+         ("M-s m" . multi-occur)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)))
 
