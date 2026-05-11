@@ -20,6 +20,17 @@
 ;; Don't like all the whitespace coloring
 (setq prelude-whitespace nil)
 
+;; Prelude turns on `global-hl-line-mode' in prelude-editor; under
+;; oled-dark the hl-line face resolves to bright yellow, which is
+;; too loud. Turn it off globally.
+(global-hl-line-mode -1)
+
+;; Scroll bars. `prelude-minimalistic-ui' kills the menu bar and
+;; line numbers but leaves vertical scroll bars on. Turn them off
+;; explicitly. (Guarded for tty frames where the mode is absent.)
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(when (fboundp 'horizontal-scroll-bar-mode) (horizontal-scroll-bar-mode -1))
+
 ;; Don't put active region in X clipboard (slow with transient-mark-mode over
 ;; remote X) - https://emacs.stackexchange.com/questions/57473/throttle-transient-mark-mode-highlighting
 (setq select-active-regions nil)
@@ -29,6 +40,18 @@
 
 (setq recentf-max-saved-items 1000)
 (setq recentf-max-menu-items 100)
+
+;; Pop up a key-completion hint after a prefix key. Built into Emacs 30+.
+;; Invaluable while relearning bindings after a package swap.
+(which-key-mode 1)
+
+;; Use flymake (built-in, what eglot uses natively) for diagnostics
+;; everywhere. Prelude turns on `global-flycheck-mode' in
+;; prelude-programming; undo that so LSP buffers don't end up with two
+;; diagnostic backends fighting. Flycheck remains available as a
+;; package; just not globally on.
+(with-eval-after-load 'flycheck
+  (global-flycheck-mode -1))
 
 
 ;; Server / external editor integration. emacsclient (used as $EDITOR)

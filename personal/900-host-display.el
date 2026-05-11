@@ -73,7 +73,60 @@
 
 ;;(setq-default c-electric-flag nil)
 
-;;window-divider-default-bottom-width and window-divider-default-right-width
-;;(setq window-divider-default-bottom-width 1
+;; --- chrome line color (OLED) ------------------------------------
+;; Use `window-divider-mode' instead of the default character-cell
+;; `vertical-border' (which is font-width wide and defeats the
+;; pixel-shift mitigation by lighting many pixels). 3 px is a
+;; visible-but-thin compromise; `right-only' since the modeline is
+;; already the natural separator at window bottoms.
+(setq window-divider-default-right-width 3
+      window-divider-default-places 'right-only)
+(window-divider-mode 1)
+
+;; Mute the divider faces to match the fringe (#333333). Default has
+;; no explicit color, so it resolves through `default' to ~white
+;; (#eeeeec) — too bright for OLED.
+(set-face-attribute 'window-divider              nil :foreground "#333333")
+(set-face-attribute 'window-divider-first-pixel  nil :foreground "#333333")
+(set-face-attribute 'window-divider-last-pixel   nil :foreground "#333333")
+
+;; Also mute `vertical-border' for TTY frames (window-divider-mode
+;; doesn't apply there) and for any transient code path that uses it.
+(set-face-attribute 'vertical-border nil
+                    :foreground "#333333"
+                    :background "#333333")
+
+;; Disable fringes entirely. Default 8px each side per window adds ~16
+;; px of static chrome per window; at a horizontal split that's 16px
+;; framing each side of the 3px divider. Tradeoff: no fringe gutter
+;; for flymake markers, wrap arrows, or diff-hl indicators. Diagnostics
+;; remain visible inline via underlines and via M-x flymake-show-buffer-diagnostics.
+(fringe-mode 0)
+
+;; --- pixel-shift left-edge protection ----------------------------
+;; OLED pixel-shift can wander the rendered image a few pixels to the
+;; left, eating the leftmost columns of text. Fringes (now off) used
+;; to absorb this. The frame's `internal-border-width' is a uniform
+;; padding inside the OS window border on all four sides; setting it
+;; on demand restores a few pixels of slack on the left (and harmless
+;; padding on the other sides — top/bottom/right shift isn't an
+;; issue per OLED behavior). The `internal-border' face inherits the
+;; default background, so the padding is invisible on the black OLED
+;; background.
+;;
+;; M-x toggle-frame-left-pad — toggle a 12 px pad on/off.
+;; C-u N M-x toggle-frame-left-pad — set pad to N px explicitly.
+(defun toggle-frame-left-pad (&optional width)
+  "Toggle a WIDTH-pixel `internal-border-width' on all frames.
+With a prefix arg, set the pad to WIDTH px explicitly (0 to clear).
+With no arg, toggle between 0 and 12 px."
+  (interactive "P")
+  (let* ((cur (or (frame-parameter nil 'internal-border-width) 0))
+         (new (cond ((numberp width) width)
+                    ((consp width) (prefix-numeric-value width))
+                    ((zerop cur) 12)
+                    (t 0))))
+    (modify-all-frames-parameters (list (cons 'internal-border-width new)))
+    (message "internal-border-width: %d → %d" cur new)))
 
 ;;; 900-host-display.el ends here

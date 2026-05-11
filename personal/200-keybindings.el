@@ -91,9 +91,14 @@
 
 (global-set-key "\C-cq" 'query-replace-regexp)
 
-(global-set-key "\C-cf" 'flycheck-first-error)
-(global-set-key "\C-cp" 'flycheck-previous-error)
-(global-set-key "\C-cn" 'flycheck-next-error)
+;; Diagnostic navigation lives on the standard `next-error' framework:
+;;   M-g n  next-error      (flymake / compilation / grep / occur)
+;;   M-g p  previous-error
+;;   M-x flymake-show-buffer-diagnostics  — navigable list buffer
+;;
+;; Old `C-c f/p/n' bindings to flycheck-* removed: they were shadowed
+;; in code buffers by crux (C-c f/n) and projectile (C-c p) so they
+;; never fired, and eglot now feeds flymake natively.
 
 (global-set-key "\C-cN" 'tags-loop-continue)
 

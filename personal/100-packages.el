@@ -7,8 +7,8 @@
 
 (require 'prelude-packages "~/.emacs.d/core/prelude-packages.el" t)
 (prelude-require-packages '(zig-mode))
-(when (eq prelude-lsp-client 'lsp-mode)
-  (prelude-require-packages '(lsp-ivy)))
+;; lsp-ivy install was gated on `prelude-lsp-client = 'lsp-mode'.
+;; lsp-mode itself has been uninstalled; line removed.
 
 (prelude-require-packages '(use-package))
 

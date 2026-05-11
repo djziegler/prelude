@@ -14,9 +14,8 @@
 ;; The prelude-modules.el in the samples folder should be copied
 ;; to your personal folder and edited there.
 
-;; Note that some modules can't be used together - e.g. you shouldn't
-;; enable both prelude-ido and prelude-ivy, as they serve the same
-;; purpose.
+;; Note that some completion modules are mutually exclusive — pick one
+;; of prelude-ido / prelude-vertico / prelude-helm.
 
 ;;; License:
 
@@ -47,7 +46,8 @@
 (require 'prelude-vertico) ;; vertico + orderless + marginalia + consult
 ;; (require 'prelude-helm) ;; Interface for narrowing and search
 ;; (require 'prelude-helm-everywhere) ;; Enable Helm everywhere
-(require 'prelude-company)
+;; (require 'prelude-company) ;; superseded by prelude-corfu
+(require 'prelude-corfu)
 (require 'prelude-key-chord) ;; Binds useful features to key combinations
 
 ;;; Vim emulation
@@ -79,7 +79,7 @@
 (require 'prelude-js)
 ;; (require 'prelude-latex)
 (require 'prelude-lisp) ;; Common setup for Lisp-like languages
-(require 'prelude-lsp-mode) ;; Base setup for the Language Server Protocol
+;; (require 'prelude-lsp-mode) ;; lsp-mode removed; eglot only.
 (require 'prelude-eglot-booster) ;; Speeds up Eglot via emacs-lsp-booster (host-side JSON parser)
 ;; (require 'prelude-lua)
 ;; (require 'prelude-ocaml)
@@ -99,6 +99,7 @@
 
 ;;; Misc
 (require 'prelude-erc) ;; A popular Emacs IRC client (useful if you're still into Freenode)
+(require 'prelude-forge) ;; GitHub/GitLab PR + issue browser from magit-status
 
 (provide 'prelude-modules)
 ;;; prelude-modules.el ends here

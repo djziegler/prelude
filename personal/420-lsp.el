@@ -1,25 +1,10 @@
-;;; 420-lsp.el --- LSP client preferences (eglot or lsp-mode)
+;;; 420-lsp.el --- eglot preferences and keybindings
 ;;
-;; The active client is controlled by `prelude-lsp-client'
-;; (see core/prelude-custom.el; default in Prelude 2.1 is 'eglot).
-;; Each block below applies only when the corresponding client is
-;; selected, so toggling the variable cleanly swaps configurations.
+;; Eglot-only config. The earlier lsp-mode branch (gated on
+;; `prelude-lsp-client = 'lsp-mode') was removed when lsp-mode itself
+;; was uninstalled — if you ever want to switch back, reinstall
+;; lsp-mode + lsp-ui and restore the gated block from git history.
 
-;; ---------------------------------------------------------------------------
-;; lsp-mode
-;; ---------------------------------------------------------------------------
-(when (eq prelude-lsp-client 'lsp-mode)
-  (with-eval-after-load 'lsp-mode
-    (setq lsp-headerline-breadcrumb-enable nil))
-
-  ;; lsp-ivy workspace symbol search
-  (with-eval-after-load 'lsp-ivy
-    (global-set-key (kbd "C-z s") #'lsp-ivy-workspace-symbol)
-    (global-set-key (kbd "C-z S") #'lsp-ivy-global-workspace-symbol)))
-
-;; ---------------------------------------------------------------------------
-;; eglot
-;; ---------------------------------------------------------------------------
 (when (eq prelude-lsp-client 'eglot)
   ;; Force eager load so `with-eval-after-load 'eglot' callbacks fire
   ;; during startup. pj-lsp relies on this — its per-mode hooks must be
@@ -32,6 +17,11 @@
   ;; rename, code-actions, format, and organize-imports).
   (define-key eglot-mode-map (kbd "C-c C-l i") #'eglot-find-implementation)
   (define-key eglot-mode-map (kbd "C-c C-l t") #'eglot-find-typeDefinition)
-  (define-key eglot-mode-map (kbd "C-c C-l d") #'eglot-find-declaration))
+  (define-key eglot-mode-map (kbd "C-c C-l d") #'eglot-find-declaration)
+
+  ;; Region-aware format. `eglot-format' formats the active region
+  ;; when one is set, falls back to whole buffer otherwise — a
+  ;; superset of the C-c C-l f / eglot-format-buffer binding.
+  (define-key eglot-mode-map (kbd "C-c C-l F") #'eglot-format))
 
 ;;; 420-lsp.el ends here
