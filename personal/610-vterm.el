@@ -11,6 +11,19 @@
 
 (use-package vterm :ensure t)
 
+;; Let windmove escape from vterm. Without these, M-arrow / M-h /
+;; M-' / M-u / M-m are captured by vterm and sent to the running
+;; shell instead of moving point between windows. customize-set-variable
+;; triggers vterm's :set handler which rebuilds vterm-mode-map to
+;; defer the listed keys to the global map.
+(customize-set-variable
+ 'vterm-keymap-exceptions
+ (delete-dups
+  (append (default-value 'vterm-keymap-exceptions)
+          '("M-h" "M-'" "M-u" "M-m"           ;; datahand windmove keys
+            "M-<left>" "M-<right>"            ;; regular-keyboard windmove
+            "M-<up>" "M-<down>"))))
+
 (defun my/vterm-mode-setup ()
   "Setup vterm keybindings.
 These explicit bindings fix keys in terminal frames and are harmless in GUI."
