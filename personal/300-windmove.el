@@ -9,7 +9,6 @@
 ;; framemove is loaded from personal/preload/framemove.el (vendored
 ;; library), so it's available by the time this file runs.
 
-(require 'cl)
 (require 'framemove)
                                         ;(require 'ansi-term)
 
