@@ -49,7 +49,7 @@
 (global-set-key "\C-z'" 'avy-goto-char-2)
 (global-set-key "\C-zt" 'avy-goto-char-timer)
 (global-set-key "\C-o" 'avy-goto-char-2)
-(global-set-key "\C-z\C-g" 'counsel-git-grep)
+(global-set-key "\C-z\C-g" 'consult-git-grep)
 (global-set-key "\C-z\C-c" 'comment-or-uncomment-region)
 (global-set-key "\C-zc" 'comment-line)
 (global-set-key "\C-z\C-z" 'suspend-frame)
