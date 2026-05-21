@@ -22,7 +22,12 @@
                 ron-mode rust-mode scss-mode smartparens yaml-mode))
  '(package-vc-selected-packages
    '((eglot-booster :vc-backend Git :url
-                    "https://github.com/jdtsmith/eglot-booster"))))
+                    "https://github.com/jdtsmith/eglot-booster")))
+ '(safe-local-variable-values
+   '((eval setq-local projectile-project-root
+           (locate-dominating-file
+            (or (buffer-file-name) default-directory)
+            "entropy-project-root.marker")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
