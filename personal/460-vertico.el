@@ -36,4 +36,12 @@
   :after (embark consult)
   :hook (embark-collect-mode . consult-preview-at-point-mode))
 
+;; Corfu: don't let RET confirm the highlighted completion candidate.
+;; Default behavior + `corfu-preview-current = insert' inserts the
+;; candidate inline when the popup is open, so a stray RET to make a
+;; newline ends up accepting an unwanted dabbrev/cape completion.
+;; TAB (corfu-complete) remains as the explicit completion key.
+(with-eval-after-load 'corfu
+  (keymap-unset corfu-map "RET" t))
+
 ;;; 460-vertico.el ends here
