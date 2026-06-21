@@ -18,8 +18,18 @@
 ;;(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-28-*-*-*-m-0-iso10646-1" nil )
 ;; -26- was 84 chars wide on LG 65' with 3x split
 ;; trying -25- now.
-(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-25-*-*-*-m-0-iso10646-1" nil )
-(set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-10")
+;; NB: 3rd arg (FRAMES) = t -> apply to ALL frames and add to
+;; default-frame-alist, so make-frame / emacsclient -c inherit this size.
+;; Without it, only the initial frame gets the readable font.
+(set-frame-font "-DAMA-Ubuntu Mono-normal-normal-normal-*-25-*-*-*-m-0-iso10646-1" nil t)
+;; NB: do NOT pin an absolute mode-line font here. An absolute font (e.g.
+;; "DejaVu Sans Mono-10") gets baked into the new-frame default by
+;; set-face-attribute, but the theme + doom-modeline reset mode-line to
+;; inherit `default' only on the live startup frame -- so make-frame frames
+;; ended up with the stale small font. Letting mode-line inherit `default'
+;; keeps it consistent across all frames. For a deliberately smaller-but-
+;; consistent modeline, use a RELATIVE height that scales per frame:
+;;   (set-face-attribute 'mode-line nil :height 0.8)
 
 ;;NS 1080
 ;;(set-frame-font "-DAMA-Ubuntu Mono-bold-normal-normal-*-23-*-*-*-m-0-iso10646-1" nil t)
