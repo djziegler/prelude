@@ -22,7 +22,8 @@
   (append (default-value 'vterm-keymap-exceptions)
           '("M-h" "M-'" "M-u" "M-m"           ;; datahand windmove keys
             "M-<left>" "M-<right>"            ;; regular-keyboard windmove
-            "M-<up>" "M-<down>"))))
+            "M-<up>" "M-<down>"              ;; regular-keyboard windmove
+            "<f11>"))))                       ;; let F11 reach toggle-frame-fullscreen
 
 (defun my/vterm-mode-setup ()
   "Setup vterm keybindings.
