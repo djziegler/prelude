@@ -1,4 +1,4 @@
-;;; 951-pj-layout-remote.el --- personal convenience: reconcile remote layouts
+;;; 951-pj-layout-remote.el --- personal convenience: reconcile remote layouts  -*- lexical-binding: t; -*-
 
 ;; pj-layout-reconcile-here (from pj) reconciles the DAEMON host (itasca). These
 ;; are my own convenience commands to reconcile a REMOTE host's layout from
