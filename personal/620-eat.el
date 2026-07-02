@@ -26,6 +26,24 @@
   ;; session to reclaim the column on it.
   (setq eat-enable-shell-prompt-annotation nil))
 
+;;; Let windmove / F11 escape eat (the port of `vterm-keymap-exceptions').
+;;
+;; eat's semi-char mode sends most keys to the terminal. `eat-semi-char-non-
+;; bound-keys' is the eat analog of `vterm-keymap-exceptions': keys listed here
+;; are NOT bound to self-input, so they fall through to the global map. eat
+;; already lets M-<arrows> through, so only the datahand windmove letters and
+;; F11 need adding. Format is key vectors: [?\e ?h] means M-h (KEY carries no
+;; meta itself); [f11] is the function key. `customize-set-variable' fires
+;; eat's :set, which rebuilds the keymap and reloads eat (guarded, so it's safe
+;; to run from here).
+(with-eval-after-load 'eat
+  (customize-set-variable
+   'eat-semi-char-non-bound-keys
+   (delete-dups
+    (append (default-value 'eat-semi-char-non-bound-keys)
+            (list [?\e ?h] [?\e ?\'] [?\e ?u] [?\e ?m]  ; datahand windmove keys
+                  [f11])))))                             ; toggle-frame-fullscreen
+
 ;;; Catch eat windows up to the bottom when their frame is activated.
 ;;
 ;; eat only keeps windows on the *selected frame* pinned to the bottom as
