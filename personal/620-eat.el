@@ -14,7 +14,17 @@
   ;; still negligible at this size. Kept finite on purpose — `nil'
   ;; (unlimited) removes the trim but grows without bound, which is a bad
   ;; fit for long-lived daemon sessions.
-  (setq eat-term-scrollback-size (* 4 1024 1024)))
+  (setq eat-term-scrollback-size (* 4 1024 1024))
+
+  ;; Reclaim a column of width. eat puts a 1-char left margin on every eat
+  ;; buffer for its shell-prompt annotations (the -/0/X command-status
+  ;; indicators), which narrows the terminal by one column vs vterm. That column
+  ;; matters: at ~78 cols Claude Code drops its token/context status line, which
+  ;; reappears with the extra width. The annotations are near-useless in a
+  ;; claude session (the "shell" runs a full-screen TUI, not shell commands), so
+  ;; turn them off. Takes effect for eat buffers created after this — recreate a
+  ;; session to reclaim the column on it.
+  (setq eat-enable-shell-prompt-annotation nil))
 
 ;;; Catch eat windows up to the bottom when their frame is activated.
 ;;
