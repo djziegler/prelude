@@ -85,12 +85,16 @@ frame, or switching GNOME workspaces to the one holding an Emacs frame."
 (remove-function after-focus-change-function #'pj-eat--on-focus-change)
 (add-function :after after-focus-change-function #'pj-eat--on-focus-change)
 
-;; Manual frame-wide snap. Bound in `eat-mode-map' (the base map, reachable in
-;; semi-char mode — C-c is a prefix there, not sent to the shell), so it works
-;; from any eat cell, e.g. the selected cell of the overview frame. C-c C-b =
-;; "bottom"; rebind by editing this line.
+;; Manual frame-wide snap, mnemonic C-c C-l — the frame-level cousin of C-l
+;; (single-window refresh). Bound BOTH globally (it's a frame-level action, so
+;; it should work from any plain buffer) and in `eat-mode-map', overriding eat's
+;; own C-c C-l => `eat-line-mode' so it fires in the overview's eat cells (the
+;; main use; `eat-line-mode' stays available via M-x). Modes that bind C-c C-l
+;; themselves shadow the global bind and keep their meaning — deliberately, so
+;; org's `org-insert-link' (and markdown / latex equivalents) are untouched.
+(global-set-key (kbd "C-c C-l") #'pj-eat-snap-frame)
 (with-eval-after-load 'eat
-  (define-key eat-mode-map (kbd "C-c C-b") #'pj-eat-snap-frame))
+  (define-key eat-mode-map (kbd "C-c C-l") #'pj-eat-snap-frame))
 
 (provide '620-eat)
 ;;; 620-eat.el ends here
