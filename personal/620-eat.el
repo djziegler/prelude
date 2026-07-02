@@ -56,6 +56,15 @@ Reuses eat's own `eat--synchronize-scroll' so the recenter math stays correct."
     (dolist (win (window-list frame 'no-minibuf))
       (pj-eat--snap-window win))))
 
+(defun pj-eat-snap-frame (&optional frame)
+  "Snap every eat window on FRAME (default: the selected frame) to the bottom.
+The frame-wide version of what C-l does for a single window — for when you
+re-visit a multi-cell frame (e.g. the layout overview) whose eats froze while
+another frame was selected. Works regardless of `pj-eat-catch-up-on-activation':
+this is the manual fallback for when the auto catch-up is off or misses."
+  (interactive)
+  (pj-eat--snap-frame (or frame (selected-frame))))
+
 (defun pj-eat--on-selection-change (frame)
   "`window-selection-change-functions' entry: catch up FRAME's eats."
   (when pj-eat-catch-up-on-activation
@@ -75,6 +84,13 @@ frame, or switching GNOME workspaces to the one holding an Emacs frame."
 (add-hook 'window-selection-change-functions #'pj-eat--on-selection-change)
 (remove-function after-focus-change-function #'pj-eat--on-focus-change)
 (add-function :after after-focus-change-function #'pj-eat--on-focus-change)
+
+;; Manual frame-wide snap. Bound in `eat-mode-map' (the base map, reachable in
+;; semi-char mode — C-c is a prefix there, not sent to the shell), so it works
+;; from any eat cell, e.g. the selected cell of the overview frame. C-c C-b =
+;; "bottom"; rebind by editing this line.
+(with-eval-after-load 'eat
+  (define-key eat-mode-map (kbd "C-c C-b") #'pj-eat-snap-frame))
 
 (provide '620-eat)
 ;;; 620-eat.el ends here
