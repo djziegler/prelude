@@ -65,22 +65,112 @@ this is the manual fallback for when the auto catch-up is off or misses."
   (interactive)
   (pj-eat--snap-frame (or frame (selected-frame))))
 
+;;; Make an eat pty follow the frame you're working in.
+;;
+;; eat sizes the pty from the buffer-local `window-adjust-process-window-size-
+;; function'. For pj-layout sessions that's `pj-layout--pty-size', which pins
+;; the pty to the instance-tagged frame and ignores any *other* frame you open
+;; on the same session — so a second (untagged) frame you work in shows a
+;; clipped / ill-fitting view (the pty stays the instance frame's size). This
+;; installs a policy that instead prefers the *selected* frame's window, and
+;; re-sizes on activation, so whichever frame you're in fits.
+;;
+;; Cost: the terminal reflows when you switch to a differently-sized frame.
+;; Undo: set `pj-eat-pty-follow-active-frame' to nil — the installed policy then
+;; skips the selected-frame preference and reverts to the instance-frame /
+;; largest behaviour (i.e. stock pj-layout). No buffer surgery needed.
+
+(defcustom pj-eat-pty-follow-active-frame t
+  "When non-nil, size an eat pty to the frame you're working in (the selected
+frame), so a session shown in several frames fits whichever one you're using.
+When nil, fall back to the instance-frame / largest policy (stock behaviour) —
+the undo switch if reflow-on-frame-switch is disruptive. Honoured live, so
+flipping it takes effect on the next frame switch (or `M-x
+pj-eat-resize-ptys')."
+  :type 'boolean :group 'pj-eat
+  :set (lambda (sym val)
+         (set-default sym val)
+         (when (fboundp 'window--adjust-process-windows)
+           (run-at-time 0 nil #'window--adjust-process-windows))))
+
+(defun pj-eat--active-frame-pty-size (process windows)
+  "`window-adjust-process-window-size-function' that prefers the selected frame.
+Choose WINDOWS on the selected frame; else on `pj-layout-instance'-tagged
+frames; else all; and take the largest of the chosen set. Honours
+`pj-eat-pty-follow-active-frame' live: when nil it skips the selected-frame
+step, so behaviour reverts to the instance-frame / largest policy."
+  (let* ((sel (and pj-eat-pty-follow-active-frame
+                   (seq-filter (lambda (w) (eq (window-frame w) (selected-frame)))
+                               windows)))
+         (inst (seq-filter
+                (lambda (w) (frame-parameter (window-frame w) 'pj-layout-instance))
+                windows)))
+    (window-adjust-process-window-size-largest process (or sel inst windows))))
+
+(defvar pj-eat--last-pty-frame nil
+  "Selected frame at the last pty resize; guards against redundant reflows.")
+(defvar pj-eat--pty-resize-pending nil
+  "Non-nil while a deferred `pj-eat--do-pty-resize' is queued (coalescing).")
+
+(defun pj-eat-resize-ptys ()
+  "Recompute every process window size now (applies the current pty policy)."
+  (interactive)
+  (when (fboundp 'window--adjust-process-windows)
+    (window--adjust-process-windows)))
+
+(defun pj-eat--do-pty-resize ()
+  (setq pj-eat--pty-resize-pending nil)
+  (when pj-eat-pty-follow-active-frame
+    (pj-eat-resize-ptys)))
+
+(defun pj-eat--request-pty-resize ()
+  "Deferred + coalesced pty resize, only when the selected frame actually
+changed (so switching windows *within* a frame never reflows the terminal)."
+  (when (and pj-eat-pty-follow-active-frame
+             (not (eq (selected-frame) pj-eat--last-pty-frame)))
+    (setq pj-eat--last-pty-frame (selected-frame))
+    (unless pj-eat--pty-resize-pending
+      (setq pj-eat--pty-resize-pending t)
+      ;; Defer out of the redisplay/focus hook before touching process sizes.
+      (run-at-time 0 nil #'pj-eat--do-pty-resize))))
+
+(defun pj-eat--activate-frame (frame)
+  "Catch FRAME's eats up on activation: snap scroll (if `pj-eat-catch-up-on-
+activation') and make the pty follow this frame (if `pj-eat-pty-follow-active-
+frame'). Each feature is independently toggled."
+  (when (frame-live-p frame)
+    (dolist (win (window-list frame 'no-minibuf))
+      (let ((buf (window-buffer win)))
+        (when (eq (buffer-local-value 'major-mode buf) 'eat-mode)
+          (when pj-eat-catch-up-on-activation
+            (pj-eat--snap-window win))
+          ;; Install the follow-active policy on this eat buffer (once),
+          ;; overriding pj-layout's instance-frame policy. Kept even when the
+          ;; toggle is off — the policy fn itself reverts behaviour then.
+          (when (and pj-eat-pty-follow-active-frame
+                     (not (eq (buffer-local-value
+                               'window-adjust-process-window-size-function buf)
+                              #'pj-eat--active-frame-pty-size)))
+            (with-current-buffer buf
+              (setq-local window-adjust-process-window-size-function
+                          #'pj-eat--active-frame-pty-size))))))
+    (pj-eat--request-pty-resize)))
+
 (defun pj-eat--on-selection-change (frame)
-  "`window-selection-change-functions' entry: catch up FRAME's eats."
-  (when pj-eat-catch-up-on-activation
-    (pj-eat--snap-frame frame)))
+  "`window-selection-change-functions' entry: activate FRAME's eats."
+  (pj-eat--activate-frame frame))
 
 (defun pj-eat--on-focus-change ()
-  "`after-focus-change-function' entry: catch up whichever frame(s) now have
+  "`after-focus-change-function' entry: activate whichever frame(s) now have
 focus. This is what fires on a WM activation — alt-tab, click into another
 frame, or switching GNOME workspaces to the one holding an Emacs frame."
-  (when pj-eat-catch-up-on-activation
-    (dolist (frame (frame-list))
-      (when (frame-focus-state frame)
-        (pj-eat--snap-frame frame)))))
+  (dolist (frame (frame-list))
+    (when (frame-focus-state frame)
+      (pj-eat--activate-frame frame))))
 
-;; Register once; idempotent across reloads. Behaviour is gated by the toggle
-;; above, so it can be flipped at runtime without re-registering.
+;; Register once; idempotent across reloads. Both features (scroll catch-up and
+;; pty-follow) are gated by their own toggle inside `pj-eat--activate-frame', so
+;; either can be flipped at runtime without re-registering these hooks.
 (add-hook 'window-selection-change-functions #'pj-eat--on-selection-change)
 (remove-function after-focus-change-function #'pj-eat--on-focus-change)
 (add-function :after after-focus-change-function #'pj-eat--on-focus-change)
