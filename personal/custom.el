@@ -24,7 +24,8 @@
    '((eglot-booster :vc-backend Git :url
                     "https://github.com/jdtsmith/eglot-booster")))
  '(safe-local-variable-values
-   '((eval setq-local projectile-project-root
+   '((typescript-indent-level . 4)
+     (eval setq-local projectile-project-root
            (locate-dominating-file
             (or (buffer-file-name) default-directory)
             "entropy-project-root.marker")))))
