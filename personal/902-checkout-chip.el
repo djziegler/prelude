@@ -12,11 +12,14 @@
 ;; the checkout NAME (stable per slot across restarts); only `--' variant names
 ;; are colored, canonical names stay plain (matches the pj convention).
 ;;
-;; Cheap by construction: the modeline/frame-title only READ a per-root cache;
-;; the cache is (re)computed off the redisplay hot path - on window selection,
-;; find-file, magit refresh, and `my/set-task' - by reading two tiny files
-;; (current-task.txt and the resolved .git/HEAD).  No file-notify, no polling,
-;; no watching big build trees.
+;; Cheap by construction: the modeline/frame-title READ a per-root cache; the
+;; heavy recompute (current-task.txt + resolving .git/HEAD) happens off the
+;; redisplay hot path - on window selection, find-file, magit refresh, and
+;; `my/set-task'.  The read path additionally stats `.git/HEAD' and re-reads it
+;; only when its mtime changed, so an OUT-OF-BAND branch switch - `pj branch' /
+;; `git switch' in a terminal, which fires none of those hooks - is reflected on
+;; the next redisplay anyway.  Still no file-notify, no polling, no watching big
+;; build trees: one `stat' per render, a full recompute only on actual change.
 
 (require 'subr-x)
 (require 'uniquify)
@@ -68,6 +71,15 @@
               (string-trim (match-string 1)))
              (t "detached"))))))))
 
+(defun my/checkout--head-mtime (root)
+  "Modification time (float) of ROOT's resolved .git/HEAD, or nil.
+One `stat'; used on the read path to notice an out-of-band branch switch
+that fired none of the refresh hooks."
+  (let* ((gd (my/checkout--gitdir root))
+         (head (and gd (expand-file-name "HEAD" gd)))
+         (attrs (and head (file-attributes head))))
+    (and attrs (float-time (file-attribute-modification-time attrs)))))
+
 (defun my/checkout--task (root)
   "First non-blank line of ROOT/current-task.txt, or nil."
   (let ((f (expand-file-name "current-task.txt" root)))
@@ -99,13 +111,21 @@ pool is rainbow-distinct; other variant names fall back to a hash."
                      :task (my/checkout--task root)
                      ;; branch only as a label fallback; ignore the boring defaults
                      :branch (let ((b (my/checkout--branch root)))
-                               (unless (member b '("main" "master" nil)) b)))
+                               (unless (member b '("main" "master" nil)) b))
+                     ;; stamp the HEAD mtime so `my/checkout--ensure' can notice
+                     ;; an out-of-band branch switch and recompute.
+                     :head-mtime (my/checkout--head-mtime root))
                my/checkout--cache))))
 
 (defun my/checkout--ensure (root)
-  "Cached chip data for ROOT, computing once if absent."
-  (or (gethash root my/checkout--cache)
-      (my/checkout--refresh root)))
+  "Cached chip data for ROOT, recomputing if absent or if .git/HEAD changed.
+The mtime check (one `stat') means a branch switch made outside emacs's hooks
+— `pj branch' / `git switch' in a terminal — shows up on the next redisplay,
+not just after an incidental window/find-file/magit event."
+  (let ((d (gethash root my/checkout--cache)))
+    (if (and d (equal (plist-get d :head-mtime) (my/checkout--head-mtime root)))
+        d
+      (my/checkout--refresh root))))
 
 (defun my/checkout--label (d)
   "Task-or-branch label string from plist D, or nil."
